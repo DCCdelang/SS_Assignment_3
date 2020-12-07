@@ -65,14 +65,14 @@ def run_two_opt_anneal():
     for _ in range(N_sim):
         x = list(range(len(adjacency_matrix)))
         init_route = random.sample(x,len(x))
+        print(init_route)
         best_route = two_opt_annealing(init_route, adjacency_matrix)
-        costs.append(len_route(best_route,adjacency_matrix))
+        costs.append(calculate_cost(best_route,adjacency_matrix))
         best_routes.append(best_routes)
 
-        print(calculate_cost(init_route,adjacency_matrix))
         print(calculate_cost(best_route,adjacency_matrix))
 
-    # plt.plot(range(N_sim),best_routes)
-    # plt.show()
+    plt.plot(range(N_sim),best_routes)
+    plt.show()
 
 run_two_opt_anneal()
