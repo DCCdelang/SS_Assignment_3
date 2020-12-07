@@ -28,23 +28,23 @@ def calculate_cost(route):
     return cost
 
 def random_small_step(x):
-    return x + 0.1 * (random.random() - .2)
+    return x + np.random.randint(-2, 2) % total_nodes 
 
 def random_big_step(x):
-    return x + 10 * (random.random() - .2)
+    return x + np.random.randint(-10, 10) % total_nodes 
+
+# # tests
+# route = random_state()
+# calculate_cost(route)
 
 
-route = random_state()
-calculate_cost(route)
 
-
-
-# local_opt = frigidum.sa(random_start=random_state,
-#            objective_function=calculate_cost,
-#            neighbours=[random_small_step, random_big_step], 
-#            copy_state=frigidum.annealing.naked,
-#            T_start=10**5,
-#            alpha=.92,
-#            T_stop=0.001,
-#            repeats=10**2
-#            )
+local_opt = frigidum.sa(random_start=random_state,
+           objective_function=calculate_cost,
+           neighbours=[random_small_step, random_big_step], 
+           copy_state=frigidum.annealing.naked,
+           T_start=10**5,
+           alpha=.92,
+           T_stop=0.001,
+           repeats=10**2
+           )
