@@ -96,6 +96,7 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
     best = route
     MC = 0
     changes = 0
+    cost_list = []
     while T > 1.35:
         # Sample city from route
         index1, index2 = np.random.randint(0,len(route),size=2)
