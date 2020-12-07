@@ -19,6 +19,7 @@ def calculate_cost(route, adjacency_matrix):
     '''
     route_shifted = np.roll(route,1)
     cost = np.sum(adjacency_matrix[route, route_shifted])
+
     return cost
 
 
@@ -68,14 +69,14 @@ def run_two_opt_anneal():
     for _ in range(N_sim):
         x = list(range(len(adjacency_matrix)))
         init_route = random.sample(x,len(x))
-        print(init_route)
+        # print(init_route)
 
         print(calculate_cost(init_route,adjacency_matrix))
 
         adjacency_matrix = make_matrix(tsp_file)
         best_route = two_opt_annealing(T, scheme, N_sim,init_route, adjacency_matrix)
 
-        print(best_route)
+        # print(best_route)
         print(calculate_cost(best_route,adjacency_matrix))
         calculate_costs.append(calculate_cost(best_route,adjacency_matrix))
         best_routes.append(best_routes)

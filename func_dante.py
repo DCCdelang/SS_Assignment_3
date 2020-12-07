@@ -60,7 +60,8 @@ def calculate_cost(route, adjacency_matrix):
     '''
     route_shifted = np.roll(route,1)
     cost = np.sum(adjacency_matrix[route, route_shifted])
-    return cost
+    st_dev = np.std(adjacency_matrix[route, route_shifted])
+    return st_dev, cost
 
 def run_two_opt(tsp_file, N_sim):
     """
@@ -73,13 +74,13 @@ def run_two_opt(tsp_file, N_sim):
     for _ in range(N_sim):
         x = list(range(len(adjacency_matrix)))
         init_route = random.sample(x,len(x))
-        print(init_route)
-        print(calculate_cost(init_route,adjacency_matrix))
+        # print(init_route)
+        print('initial cost 2opt:', calculate_cost(init_route,adjacency_matrix)[1])
 
         best_route = two_opt(init_route, adjacency_matrix)
-        print(best_route)
-        print(calculate_cost(best_route,adjacency_matrix))
-        calculate_costs.append(calculate_cost(best_route,adjacency_matrix))
+        # print(best_route)
+        print('best cost 2opt:', calculate_cost(best_route,adjacency_matrix)[1])
+        calculate_costs.append(calculate_cost(best_route,adjacency_matrix)[1])
         best_routes.append(best_route)
 
     return best_routes, calculate_costs
@@ -89,23 +90,26 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
     Annealing function with different parameter possibilities
     """
     best = route
-    a = 10
-    b = 200
     MC = 0
     changes = 0
     while T > 1.35:
-        # Cooling scheme T
+        # Sample city from route
+        index1, index2 = np.random.randint(0,len(route),size=2)
+        sd0, cost0 = calculate_cost(route,adjacency_matrix)
+
+        route[index1], route[index2] = route[index2], route[index1]
+        sd1, cost1 = calculate_cost(route,adjacency_matrix)
+
+        # Adjust temperature
         if scheme == "lin":
             T = T*0.99
         if scheme == "log":
+            a = 10
+            b = 200
             T = a/np.log(changes+b)
-
-        # Sample city from route
-        index1, index2 = np.random.randint(0,len(route),size=2)
-        cost0 = calculate_cost(route,adjacency_matrix)
-
-        route[index1], route[index2] = route[index2], route[index1]
-        cost1 = calculate_cost(route,adjacency_matrix)
+        if scheme == "std":
+            delta = .01
+            T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
 
         if cost1 < cost0:
             cost0 = cost1
@@ -134,15 +138,15 @@ def run_annealing(tsp_file, T, scheme, N_sim):
     for _ in range(N_sim):
         x = list(range(len(adjacency_matrix)))
         init_route = random.sample(x,len(x))
-        print(init_route)
-        print(calculate_cost(init_route,adjacency_matrix))
+        # print(init_route)
+        print('initial cost annealing:', calculate_cost(init_route,adjacency_matrix)[1])
 
         best_route = tsp_annealing(T, scheme, init_route, adjacency_matrix)
 
-        print(best_route)
-        print(calculate_cost(best_route,adjacency_matrix))
+        # print(best_route)
+        print('best cost annealing:', calculate_cost(best_route,adjacency_matrix)[1])
 
-        calculate_costs.append(calculate_cost(best_route,adjacency_matrix))
+        calculate_costs.append(calculate_cost(best_route,adjacency_matrix)[1])
         best_routes.append(best_route)
     return best_routes, calculate_costs
 
