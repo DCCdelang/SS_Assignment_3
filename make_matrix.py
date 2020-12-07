@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def get_distances(file_name):
+def make_matrix(file_name):
     """
     Function to create a matrix with euclidian distances 
     based on the tsp.text files
