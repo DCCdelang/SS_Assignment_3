@@ -5,6 +5,10 @@ Main file with all functions needed for run.py
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+from numpy.random import RandomState
+
+rs = RandomState(420)
+random.seed(420)
 
 def make_matrix(tsp_file):
     """"
@@ -101,7 +105,7 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
             T = a/np.log(changes+b)
 
         # Sample city from route
-        index1, index2 = np.random.randint(0,len(route),size=2)
+        index1, index2 = rs.randint(0,len(route),size=2)
         cost0 = calculate_cost(route,adjacency_matrix)
 
         route[index1], route[index2] = route[index2], route[index1]
@@ -111,7 +115,7 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
             cost0 = cost1
             changes += 1
         else:
-            U = np.random.uniform()
+            U = rs.uniform()
             if U < np.exp((cost0-cost1)/T):
                 # print(T, np.exp((cost0-cost1)/T))
                 cost0 = cost1
