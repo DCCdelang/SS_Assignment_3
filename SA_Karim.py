@@ -91,26 +91,25 @@ def stochastic_greedy_reroute_missing( broken_route ):
 	missing_idx = np.where(broken_route != -1)[0]
 	list_of_parts = np.split(broken_route[missing_idx],np.where(np.diff(missing_idx)!=1)[0]+1)
 
-	incomplete_route = stochastic_glue_enpoints(list_of_parts)[0]
+	incomplete_route = tsp.stochastic_glue_enpoints(list_of_parts)[0]
 
 	"""
 		for vertex in missing_nodes, reroute ass in incomplete_route
 	"""
-	complete_route = stochastic_reroute_missing(incomplete_route, missing_nodes)
+	complete_route = tsp.stochastic_reroute_missing(incomplete_route, missing_nodes)
 
 
 	return complete_route
 
 
-print('hoi')
-
 local_opt = frigidum.sa(random_start=random_state,
            objective_function=calculate_cost,
-           neighbours=[random_swap], 
+           neighbours=[tsp.euclidian_bomb_and_fix, tsp.euclidian_nuke_and_fix, tsp.route_bomb_and_fix, tsp.random_disconnect_vertices_and_fix], 
            copy_state=frigidum.annealing.naked,
-           T_start=10**6,
-           alpha=.9999,
-           T_stop=0.0001,
-           repeats=10**3,
+           T_start=10**5,
+           alpha=.92,
+           T_stop=0.001,
+           repeats=10**2,
            )
+
 print(local_opt)
