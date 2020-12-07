@@ -85,7 +85,7 @@ def run_two_opt(tsp_file, N_sim):
 
     return best_routes, calculate_costs
 
-def tsp_annealing(T, scheme, route, adjacency_matrix):
+def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     """
     Annealing function with different parameter possibilities
     """
@@ -95,7 +95,7 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
     cost_list = []
     T_list = []
     T_init = T
-    while T > .01 and chain_length < 1000:
+    while T > .01 and chain_length < max_chain_length:
         # Sample city from route
         index1, index2 = np.random.randint(0,len(route),size=2)
         sd0, cost0 = calculate_cost(route,adjacency_matrix)
@@ -134,7 +134,7 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
     # plt.show()
     return best
 
-def run_annealing(tsp_file, T, scheme, N_sim):
+def run_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
     """
     Run function for annealing function
     """
@@ -145,7 +145,7 @@ def run_annealing(tsp_file, T, scheme, N_sim):
     for _ in range(N_sim):
         x = list(range(len(adjacency_matrix)))
         init_route = random.sample(x,len(x))
-        best_route = tsp_annealing(T, scheme, init_route, adjacency_matrix)
+        best_route = tsp_annealing(T, scheme, init_route, adjacency_matrix, max_chain_length)
 
         calculate_costs.append(calculate_cost(best_route,adjacency_matrix)[1])
         best_routes.append(best_route)
