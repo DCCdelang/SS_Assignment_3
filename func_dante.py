@@ -92,13 +92,17 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
     best = route
     MC = 0
     chain_length = 0
+    cost_list = []
+    T_list = []
+    T_init = T
     while T > .01 and chain_length < 1000:
         # Sample city from route
         index1, index2 = np.random.randint(0,len(route),size=2)
         sd0, cost0 = calculate_cost(route,adjacency_matrix)
+        cost_list.append(cost0)
 
         route[index1], route[index2] = route[index2], route[index1]
-        sd1, cost1 = calculate_cost(route,adjacency_matrix)
+        _, cost1 = calculate_cost(route,adjacency_matrix)
 
         # Adjust temperature
         if scheme == "lin":
@@ -110,6 +114,8 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
         if scheme == "std":
             delta = .01
             T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
+
+        T_list.append(T)
 
         if cost1 < cost0:
             cost0 = cost1
@@ -123,6 +129,9 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
             else:
                 route[index1], route[index2] = route[index2], route[index1]
         route = best
+
+    # plt.plot(T_list,cost_list)
+    # plt.show()
     return best
 
 def run_annealing(tsp_file, T, scheme, N_sim):
