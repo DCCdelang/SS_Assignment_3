@@ -8,6 +8,7 @@ import random
 
 tsp_file = "TSP-Configurations/eil51.tsp.txt"
 
+
 def make_matrix(tsp_file):
     # Extracting node coordinates from tsp file
     node_list = []
