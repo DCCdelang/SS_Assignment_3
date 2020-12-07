@@ -2,8 +2,8 @@ from func_dante import *
 
 
 tsp_file = "TSP-Configurations/eil51.tsp.txt"
-T = 500
-scheme = "std" # "lin", "log" or "std"
+T = 10000
+scheme = "lin" # "lin", "log" or "std"
 N_sim = 1
 
 routes, costs = run_annealing(tsp_file, T, scheme, N_sim)
