@@ -52,21 +52,25 @@ def len_route(route,adjacency_matrix):
         length += adjacency_matrix[route[i]][route[i+1]]
     return length
 
-
-best_routes = []
-
-adjacency_matrix = make_matrix(tsp_file)
-
-for sol in range(100):
-    x = list(range(len(adjacency_matrix)))
-    init_route = random.sample(x,len(x))
-    # print(init_route)
-    # print(len_route(init_route,adjacency_matrix))
-
+def run_two_opt():
+    best_routes = []
+    len_routes = []
+    N_sim = 300
     adjacency_matrix = make_matrix(tsp_file)
-    best_route = two_opt(init_route, adjacency_matrix)
-    # print(best_route)
-    # print(len_route(best_route,adjacency_matrix))
-    best_routes.append(len_route(best_route,adjacency_matrix))
 
-plt.plot(range(100),best_routes)
+    for sol in range(N_sim):
+        x = list(range(len(adjacency_matrix)))
+        init_route = random.sample(x,len(x))
+        # print(init_route)
+        # print(len_route(init_route,adjacency_matrix))
+
+        adjacency_matrix = make_matrix(tsp_file)
+        best_route = two_opt(init_route, adjacency_matrix)
+        # print(best_route)
+        # print(len_route(best_route,adjacency_matrix))
+        len_routes.append(len_route(best_route,adjacency_matrix))
+        best_routes.append(best_routes)
+
+    plt.plot(range(N_sim),best_routes)
+    plt.show()
+
