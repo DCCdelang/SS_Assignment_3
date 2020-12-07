@@ -79,7 +79,7 @@ def run_two_opt(tsp_file, N_sim):
         x = list(range(len(adjacency_matrix)))
         init_route = random.sample(x,len(x))
         # print(init_route)
-        print('initial cost 2opt:', calculate_cost(init_route,adjacency_matrix)[1])
+        # print('initial cost 2opt:', calculate_cost(init_route,adjacency_matrix)[1])
 
         best_route = two_opt(init_route, adjacency_matrix)
         # print(best_route)
@@ -95,9 +95,9 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
     """
     best = route
     MC = 0
-    changes = 0
-    cost_list = []
-    while T > 1.35:
+    chain_length = 0
+    while T > .01 and chain_length < 1000:
+        print('T=', round(T, 3))
         # Sample city from route
         index1, index2 = np.random.randint(0,len(route),size=2)
         sd0, cost0 = calculate_cost(route,adjacency_matrix)
@@ -111,25 +111,25 @@ def tsp_annealing(T, scheme, route, adjacency_matrix):
         if scheme == "log":
             a = 10
             b = 200
-            T = a/np.log(changes+b)
+            T = a/np.log(chain_length+b)
         if scheme == "std":
             delta = .01
             T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
 
         if cost1 < cost0:
             cost0 = cost1
-            changes += 1
+            chain_length += 1
         else:
             U = rs.uniform()
             if U < np.exp((cost0-cost1)/T):
                 # print(T, np.exp((cost0-cost1)/T))
                 cost0 = cost1
                 MC += 1
-                changes += 1
+                chain_length += 1
             else:
                 route[index1], route[index2] = route[index2], route[index1]
         route = best
-    print("MC =", MC, "Changes =", changes)
+    print("Markov-chain length: =", chain_length)
     return best
 
 def run_annealing(tsp_file, T, scheme, N_sim):
@@ -144,7 +144,7 @@ def run_annealing(tsp_file, T, scheme, N_sim):
         x = list(range(len(adjacency_matrix)))
         init_route = random.sample(x,len(x))
         # print(init_route)
-        print('initial cost annealing:', calculate_cost(init_route,adjacency_matrix)[1])
+        # print('initial cost annealing:', calculate_cost(init_route,adjacency_matrix)[1])
 
         best_route = tsp_annealing(T, scheme, init_route, adjacency_matrix)
 
