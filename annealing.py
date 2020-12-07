@@ -22,7 +22,7 @@ def calculate_cost(route, adjacency_matrix):
     return cost
 
 
-def two_opt_annealing(route, adjacency_matrix):
+def two_opt_annealing(T, scheme, N_sim, route, adjacency_matrix):
     best = route
     T = 500 # initial T
     a = 10
@@ -71,7 +71,7 @@ def run_two_opt_anneal(T,scheme, N_sim):
         print(calculate_cost(init_route,adjacency_matrix))
 
         adjacency_matrix = make_matrix(tsp_file)
-        best_route = two_opt_annealing(init_route, adjacency_matrix)
+        best_route = two_opt_annealing(T, scheme, N_sim,init_route, adjacency_matrix)
 
         print(best_route)
         print(calculate_cost(best_route,adjacency_matrix))
@@ -96,5 +96,8 @@ def plot_route(tsp_file,route):
     plt.plot([node1[1],node2[1]],[node1[2],node2[2]])
     plt.show()
 
-route = run_two_opt_anneal()
+T = 
+scheme = 
+N_sim = 
+route = run_two_opt_anneal(T, scheme, N_sim)
 plot_route(tsp_file,route)
