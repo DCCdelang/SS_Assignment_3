@@ -68,6 +68,7 @@ def run_two_opt_anneal(T,scheme, N_sim):
         x = list(range(len(adjacency_matrix)))
         init_route = random.sample(x,len(x))
         print(init_route)
+
         print(calculate_cost(init_route,adjacency_matrix))
 
         adjacency_matrix = make_matrix(tsp_file)
@@ -78,6 +79,7 @@ def run_two_opt_anneal(T,scheme, N_sim):
         calculate_costs.append(calculate_cost(best_route,adjacency_matrix))
         best_routes.append(best_routes)
     return best_route
+
 
 def plot_route(tsp_file,route):
     node_list = []
