@@ -10,7 +10,7 @@ import random
 
 from make_matrix import make_matrix
 
-tsp_file = "TSP-Configurations/eil51.tsp.txt"
+tsp_file = "TSP-Configurations/a280.tsp.txt"
 
 
 def calculate_cost(route, adjacency_matrix):
@@ -58,7 +58,8 @@ def two_opt_annealing(T, scheme, N_sim, route, adjacency_matrix):
     print("MC =", MC, "Changes =", changes)
     return best
 
-def run_two_opt_anneal(T,scheme, N_sim):
+# def run_two_opt_anneal(T,scheme, N_sim):
+def run_two_opt_anneal():
     best_routes = []
     calculate_costs = []
     N_sim = 1
