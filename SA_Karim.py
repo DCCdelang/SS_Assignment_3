@@ -34,7 +34,7 @@ def random_big_step(x):
     return x + 10 * (random.random() - .2)
 
 
-route = random_state
+route = random_state()
 calculate_cost(route)
 
 
