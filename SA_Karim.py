@@ -24,11 +24,15 @@ def calculate_cost(route):
     '''
     route_shifted = np.roll(route,1)
     cost = np.sum(distances[route, route_shifted])
-    print(cost)
     return cost
 
-def random_small_step(x):
-    return x + np.random.randint(-2, 2) % total_nodes 
+def random_change(route):
+    index = np.random.randint(0, total_nodes) % total_nodes 
+    swap = np.random.randint(0, total_nodes) % total_nodes 
+    temp = route[index]
+    route[index] = route[index - swap % total_nodes]
+    route[index - swap % total_nodes] = temp 
+    return route
 
 def random_big_step(x):
     return x + np.random.randint(-10, 10) % total_nodes 
@@ -41,10 +45,11 @@ def random_big_step(x):
 
 local_opt = frigidum.sa(random_start=random_state,
            objective_function=calculate_cost,
-           neighbours=[random_small_step, random_big_step], 
+           neighbours=[random_change], 
            copy_state=frigidum.annealing.naked,
            T_start=10**5,
            alpha=.92,
            T_stop=0.001,
            repeats=10**2
            )
+print(local_opt)
