@@ -5,9 +5,9 @@ import random
 
 from frigidum.examples import tsp
 
-from get_distances import get_distances
+from make_matrix import make_matrix
 
-dist_matrix = get_distances('TSP-Configurations/eil51.tsp.txt')
+dist_matrix = make_matrix('TSP-Configurations/eil51.tsp.txt')
 total_nodes = len(dist_matrix[0])
 
 def random_state():
@@ -106,10 +106,11 @@ local_opt = frigidum.sa(random_start=random_state,
            objective_function=calculate_cost,
            neighbours=[tsp.euclidian_bomb_and_fix, tsp.euclidian_nuke_and_fix, tsp.route_bomb_and_fix, tsp.random_disconnect_vertices_and_fix], 
            copy_state=frigidum.annealing.naked,
-           T_start=10**5,
+           T_start=10**4,
            alpha=.92,
-           T_stop=0.001,
+           T_stop=1,
            repeats=10**2,
+		   post_annealing = tsp.local_search_2opt
            )
 
 print(local_opt)

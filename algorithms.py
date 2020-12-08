@@ -26,6 +26,7 @@ def calculate_cost(route, adjacency_matrix):
     """
     route_shifted = np.roll(route,1)
     cost = np.sum(adjacency_matrix[route, route_shifted])
+    print(cost)
     st_dev = np.std(adjacency_matrix[route, route_shifted])
     return st_dev, cost
 
@@ -72,7 +73,7 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     Annealing function with different parameter possibilities
     """
     best = route
-    iterations = 0
+    iterations = 1
     chain_length = 0
     cost_list = []
     T_list = []
@@ -114,8 +115,8 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
         route = best
     print("Max iterations:", iterations)
     # plt.plot(T_list,cost_list)
-    plt.plot(range(len(cost_list)),cost_list)
-    plt.show()
+    # plt.plot(range(len(cost_list)),cost_list)
+    # plt.show()
     return best
 
 def run_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
@@ -147,6 +148,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     accept_list = [[],[]]
     while T > 0.001 and iterations < max_chain_length:
 
+    while T > 0.01 and iterations < max_chain_length:
         for i in range(1, len(route) - 2):
             # Adjust temperature
             if scheme == "lin":
