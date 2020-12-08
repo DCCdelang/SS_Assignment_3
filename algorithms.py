@@ -146,7 +146,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     T_list = []
     accept_list = [[],[]]
     while T > 0.001 and iterations < max_chain_length:
-        
+
         for i in range(1, len(route) - 2):
             # Adjust temperature
             if scheme == "lin":
