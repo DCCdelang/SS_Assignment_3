@@ -26,6 +26,7 @@ def calculate_cost(route, adjacency_matrix):
     """
     route_shifted = np.roll(route,1)
     cost = np.sum(adjacency_matrix[route, route_shifted])
+    print(cost)
     st_dev = np.std(adjacency_matrix[route, route_shifted])
     return st_dev, cost
 
@@ -72,7 +73,7 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     Annealing function with different parameter possibilities
     """
     best = route
-    iterations = 0
+    iterations = 1
     chain_length = 0
     cost_list = []
     T_list = []
@@ -114,8 +115,8 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
         route = best
     print("Max iterations:", iterations)
     # plt.plot(T_list,cost_list)
-    plt.plot(range(len(cost_list)),cost_list)
-    plt.show()
+    # plt.plot(range(len(cost_list)),cost_list)
+    # plt.show()
     return best
 
 def run_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
@@ -141,19 +142,27 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     Calculates the best route using greedy two_opt
     """
     best = route
-    iterations = 0
-    while T > 0.001 and iterations < max_chain_length:
-        # Adjust temperature
-        if scheme == "lin":
-            T = T*0.999
-        if scheme == "log":
-            C = 1
-            T = C/np.log(iterations)
-        if scheme == "std":
-            delta = .01
-            T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
+    iterations = 1
+    cost_list = []
+    T_list = []
+    
+    sd, cost0 = calculate_cost(route, adjacency_matrix)
 
+    while T > 0.01 and iterations < max_chain_length:
         for i in range(1, len(route) - 2):
+            # Adjust temperature
+            T_list.append(T)
+            if scheme == "lin":
+                T = T * 0.975
+            if scheme == "log":
+                a = 1
+                b = 100
+                T = a/np.log(iterations + b)
+            if scheme == "std":
+                delta = .1
+                T = T / (1 + ((np.log(1+delta)* T) / (3 * sd)))
+                
+
             for j in range(i + 1, len(route)):
                 iterations += 1
                 if j - i == 1: continue
@@ -162,13 +171,22 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
                     best[i:j] = best[j - 1:i - 1:-1]
                 else:
                     temp = best
-                    sd0, cost0 = calculate_cost(temp,adjacency_matrix)
+                    sd, cost0 = calculate_cost(temp,adjacency_matrix)
                     temp[i:j] = temp[j - 1:i - 1:-1]
                     _, cost1 = calculate_cost(temp,adjacency_matrix)
                     U = rs.uniform()
                     if U < np.exp((cost0-cost1)/T):
+                        print('T:', T, 'chance', np.exp((cost0-cost1)/T))
                         best[i:j] = best[j - 1:i - 1:-1]
+
+                cost_list.append(cost0)
+
+
         route = best
+
+    plt.plot(range(len(cost_list)),cost_list)
+    plt.show()
+
     return best
 
 def run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
