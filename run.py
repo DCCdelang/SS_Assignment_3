@@ -1,4 +1,5 @@
-from func_dante import *
+from algorithms import *
+from plot_route import plot_route
 
 
 tsp_file = "TSP-Configurations/a280.tsp.txt"

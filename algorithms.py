@@ -1,5 +1,7 @@
 """
 Main file with all functions needed for run.py
+Primarly based on:
+https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
 """
 
 import numpy as np
@@ -7,40 +9,27 @@ import matplotlib.pyplot as plt
 import random
 from numpy.random import RandomState
 
+from make_matrix import make_matrix
+
 rs = RandomState(420)
 random.seed(420)
 
-def make_matrix(tsp_file):
-    """"
-    Creates an adjacency matrix based on the tsp file
-    """ 
-    # Extracting node coordinates from tsp file
-    node_list = []
-    with open(tsp_file,"r") as reader:
-        for line in reader:
-            line = line.split()
-            if line[0].isdigit() == True:
-                node_list.append([int(x) for x in line])
 
-    # Creating adjacency matrix
-    num_node = len(node_list)
-    adjacency_matrix = np.zeros((num_node,num_node))
-    for node1 in range(num_node):
-        for node2 in range(num_node):
-            if node1 != node2:
-                x = abs(node_list[node1][1] - node_list[node2][1])
-                y = abs(node_list[node1][2] - node_list[node2][2])
-                dist = np.sqrt(x**2+y**2)
-                adjacency_matrix[node1][node2] = dist
-    return adjacency_matrix
-
-# primarly based on https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
 def cost_change(adjacency_matrix, n1, n2, n3, n4):
     """
     Calculates change of cost for two_opt function
     """
     return adjacency_matrix[n1][n3] + adjacency_matrix[n2][n4] - \
         adjacency_matrix[n1][n2] - adjacency_matrix[n3][n4]
+
+def calculate_cost(route, adjacency_matrix):
+    '''
+    Returns the cost of the current route based on adjacency matrix
+    '''
+    route_shifted = np.roll(route,1)
+    cost = np.sum(adjacency_matrix[route, route_shifted])
+    st_dev = np.std(adjacency_matrix[route, route_shifted])
+    return st_dev, cost
 
 def two_opt(route, adjacency_matrix):
     """
@@ -59,15 +48,6 @@ def two_opt(route, adjacency_matrix):
                     improved = True
         route = best
     return best
-
-def calculate_cost(route, adjacency_matrix):
-    '''
-    Returns the cost of the current route based on adjacency matrix
-    '''
-    route_shifted = np.roll(route,1)
-    cost = np.sum(adjacency_matrix[route, route_shifted])
-    st_dev = np.std(adjacency_matrix[route, route_shifted])
-    return st_dev, cost
 
 def run_two_opt(tsp_file, N_sim):
     """
@@ -156,23 +136,4 @@ def run_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
         best_routes.append(best_route)
     return best_routes, calculate_costs
 
-def plot_route(tsp_file,route):
-    """
-    Plot function to show route
-    """
-    node_list = []
-    with open(tsp_file,"r") as reader:
-        for line in reader:
-            line = line.split()
-            if line[0].isdigit() == True:
-                node_list.append([int(x) for x in line])
-    for i in range(len(node_list)):
-        plt.scatter(node_list[i][1],node_list[i][2],c="r")
-    for i in range(len(route)-1):
-        node1 = node_list[route[i]]
-        node2 = node_list[route[i+1]]
-        plt.plot([node1[1],node2[1]],[node1[2],node2[2]],"b")
-    node1 = node_list[route[-1]]
-    node2 = node_list[route[0]]
-    plt.plot([node1[1],node2[1]],[node1[2],node2[2]], "b")
-    plt.show()
+

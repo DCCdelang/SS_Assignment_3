@@ -1,18 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-def make_matrix(file_name):
-    """
-    Function to create a matrix with euclidian distances 
+def make_matrix(tsp_file):
+    """"
+    Creates a matrix with euclidian distances 
     based on the tsp.text files
-    """
+    """ 
+    # Extracting node coordinates from tsp file
     node_list = []
-
-    with open(file_name,"r") as reader:
+    with open(tsp_file,"r") as reader:
         for line in reader:
+            line = line.split()
             if line[0].isdigit() == True:
-                node_list.append([int(x) for x in line.split()])
+                node_list.append([int(x) for x in line])
 
     # Creating adjacency matrix
     num_node = len(node_list)
@@ -24,5 +24,4 @@ def make_matrix(file_name):
                 y = abs(node_list[node1][2] - node_list[node2][2])
                 dist = np.sqrt(x**2+y**2)
                 adjacency_matrix[node1][node2] = dist
-
     return adjacency_matrix
