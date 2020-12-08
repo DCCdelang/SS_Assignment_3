@@ -24,4 +24,5 @@ def make_matrix(tsp_file):
                 y = abs(node_list[node1][2] - node_list[node2][2])
                 dist = np.sqrt(x**2+y**2)
                 adjacency_matrix[node1][node2] = dist
+    
     return adjacency_matrix

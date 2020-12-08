@@ -1,7 +1,5 @@
 """
 Main file with all functions needed for run.py
-Primarly based on:
-https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
 """
 
 import numpy as np
@@ -23,14 +21,17 @@ def cost_change(adjacency_matrix, n1, n2, n3, n4):
         adjacency_matrix[n1][n2] - adjacency_matrix[n3][n4]
 
 def calculate_cost(route, adjacency_matrix):
-    '''
+    """
     Returns the cost of the current route based on adjacency matrix
-    '''
+    """
     route_shifted = np.roll(route,1)
     cost = np.sum(adjacency_matrix[route, route_shifted])
     st_dev = np.std(adjacency_matrix[route, route_shifted])
     return st_dev, cost
 
+
+# Primarly based on:
+# https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
 def two_opt(route, adjacency_matrix):
     """
     Calculates the best route using greedy two_opt
@@ -46,7 +47,6 @@ def two_opt(route, adjacency_matrix):
                     best[j - 1], best[j]) < 0:
                     best[i:j] = best[j - 1:i - 1:-1]
                     improved = True
-        route = best
     return best
 
 def run_two_opt(tsp_file, N_sim):
@@ -76,10 +76,10 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     chain_length = 0
     cost_list = []
     T_list = []
-    while T > 0.001 and iterations < max_chain_length:
+    while T > 0.01 and iterations < max_chain_length:
         # Sample city from route
         index1, index2 = np.random.randint(0,len(route),size=2)
-        sd0, cost0 = calculate_cost(route,adjacency_matrix)
+        sd, cost0 = calculate_cost(route,adjacency_matrix)
         cost_list.append(cost0)
 
         route[index1], route[index2] = route[index2], route[index1]
@@ -89,14 +89,13 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
 
         # Adjust temperature
         if scheme == "lin":
-            T = T*0.999
+            T = T*0.975
         if scheme == "log":
-            a = 1
-            b = 100
-            T = a/np.log(chain_length+b)
+            C = 1
+            T = C / np.log(chain_length)
         if scheme == "std":
-            delta = .01
-            T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
+            delta = .1
+            T = T / (1 + ((np.log(1+delta)* T) / (3 * sd)))
 
         T_list.insert(0,T)
 
@@ -107,7 +106,7 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
         else:
             U = rs.uniform()
             if U < np.exp((cost0-cost1)/T):
-                print(T,np.exp((cost0-cost1)/T))
+                # print(T,np.exp((cost0-cost1)/T))
                 cost0 = cost1
                 chain_length += 1
             else:
