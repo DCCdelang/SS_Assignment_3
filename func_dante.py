@@ -18,8 +18,9 @@ def make_matrix(tsp_file):
     node_list = []
     with open(tsp_file,"r") as reader:
         for line in reader:
+            line = line.split()
             if line[0].isdigit() == True:
-                node_list.append([int(x) for x in line.split()])
+                node_list.append([int(x) for x in line])
 
     # Creating adjacency matrix
     num_node = len(node_list)
@@ -31,7 +32,6 @@ def make_matrix(tsp_file):
                 y = abs(node_list[node1][2] - node_list[node2][2])
                 dist = np.sqrt(x**2+y**2)
                 adjacency_matrix[node1][node2] = dist
-
     return adjacency_matrix
 
 # primarly based on https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
@@ -39,7 +39,8 @@ def cost_change(adjacency_matrix, n1, n2, n3, n4):
     """
     Calculates change of cost for two_opt function
     """
-    return adjacency_matrix[n1][n3] + adjacency_matrix[n2][n4] - adjacency_matrix[n1][n2] - adjacency_matrix[n3][n4]
+    return adjacency_matrix[n1][n3] + adjacency_matrix[n2][n4] - \
+        adjacency_matrix[n1][n2] - adjacency_matrix[n3][n4]
 
 def two_opt(route, adjacency_matrix):
     """
@@ -52,7 +53,8 @@ def two_opt(route, adjacency_matrix):
         for i in range(1, len(route) - 2):
             for j in range(i + 1, len(route)):
                 if j - i == 1: continue
-                if cost_change(adjacency_matrix, best[i - 1], best[i], best[j - 1], best[j]) < 0:
+                if cost_change(adjacency_matrix, best[i - 1], best[i], \
+                    best[j - 1], best[j]) < 0:
                     best[i:j] = best[j - 1:i - 1:-1]
                     improved = True
         route = best
@@ -90,12 +92,11 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     Annealing function with different parameter possibilities
     """
     best = route
-    MC = 0
+    iterations = 0
     chain_length = 0
     cost_list = []
     T_list = []
-    T_init = T
-    while T > .01 and chain_length < max_chain_length:
+    while T > 0.001 and iterations < max_chain_length:
         # Sample city from route
         index1, index2 = np.random.randint(0,len(route),size=2)
         sd0, cost0 = calculate_cost(route,adjacency_matrix)
@@ -104,34 +105,38 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
         route[index1], route[index2] = route[index2], route[index1]
         _, cost1 = calculate_cost(route,adjacency_matrix)
 
+        iterations += 1
+
         # Adjust temperature
         if scheme == "lin":
-            T = T*0.99
+            T = T*0.999
         if scheme == "log":
-            a = 10
-            b = 200
+            a = 1
+            b = 100
             T = a/np.log(chain_length+b)
         if scheme == "std":
             delta = .01
             T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
 
-        T_list.append(T)
+        T_list.insert(0,T)
 
+        # Metropolis step   
         if cost1 < cost0:
             cost0 = cost1
             chain_length += 1
         else:
             U = rs.uniform()
             if U < np.exp((cost0-cost1)/T):
+                print(T,np.exp((cost0-cost1)/T))
                 cost0 = cost1
-                MC += 1
                 chain_length += 1
             else:
                 route[index1], route[index2] = route[index2], route[index1]
         route = best
-
+    print("Max iterations:", iterations)
     # plt.plot(T_list,cost_list)
-    # plt.show()
+    plt.plot(range(len(cost_list)),cost_list)
+    plt.show()
     return best
 
 def run_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
@@ -158,8 +163,9 @@ def plot_route(tsp_file,route):
     node_list = []
     with open(tsp_file,"r") as reader:
         for line in reader:
+            line = line.split()
             if line[0].isdigit() == True:
-                node_list.append([int(x) for x in line.split()])
+                node_list.append([int(x) for x in line])
     for i in range(len(node_list)):
         plt.scatter(node_list[i][1],node_list[i][2],c="r")
     for i in range(len(route)-1):
