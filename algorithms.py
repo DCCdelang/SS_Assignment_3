@@ -92,11 +92,7 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
             T = T*0.975
         if scheme == "log":
             C = 1
-<<<<<<< HEAD
-            T = C/np.log(iterations)
-=======
             T = C / np.log(chain_length)
->>>>>>> a449d5dcd3a7cc19164ef204d43d805ae4c114a4
         if scheme == "std":
             delta = .1
             T = T / (1 + ((np.log(1+delta)* T) / (3 * sd)))
