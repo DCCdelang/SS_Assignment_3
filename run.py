@@ -25,11 +25,11 @@ plot_route(tsp_file,route)
 # print('scheme =', scheme, "Cost =", costs[-1])
 # plot_route(tsp_file,route)
 
-T = 10000
-scheme = "log" # "lin", "log" or "std"
-routes, costs = run_annealing(tsp_file, T, scheme, N_sim, max_chain_length)
-route = routes[0]
-print('log scheme =', costs[-1])
+# T = 10000
+# scheme = "log" # "lin", "log" or "std"
+# routes, costs = run_annealing(tsp_file, T, scheme, N_sim, max_chain_length)
+# route = routes[0]
+# print('log scheme =', costs[-1])
 # plot_route(tsp_file,route)
 
 # T = 10000

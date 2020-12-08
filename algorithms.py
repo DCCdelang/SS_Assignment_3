@@ -141,22 +141,21 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     """
     Calculates the best route using greedy two_opt
     """
-    best = route
+    best = route.copy()
     iterations = 0
     cost_list = []
     T_list = []
     accept_list = [[],[]]
-    while T > 0.001 and iterations < max_chain_length:
 
     while T > 0.01 and iterations < max_chain_length:
         for i in range(1, len(route) - 2):
             # Adjust temperature
             if scheme == "lin":
                 T = T*0.99
-            if scheme == "log":
+            elif scheme == "log":
                 C = 1
                 T = C/np.log(iterations)
-            if scheme == "std":
+            elif scheme == "std":
                 delta = .01
                 T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
 
