@@ -136,7 +136,7 @@ def run_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
     return best_routes, calculate_costs
 
 
-def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
+def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
     """
     Calculates the best route using greedy two_opt
     """
@@ -146,11 +146,11 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
     T_list = []
     accept_list = [[],[]]
 
-    while T > .0001:
+    while T > 0:
         for i in range(1, len(route) - 2):
             # Adjust temperature
             if scheme == "lin":
-                T = T*0.975
+                T = T*c
             if scheme == "log":
                 C = 1
                 T = C/np.log(iterations)
@@ -187,7 +187,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
         route = best.copy()
     return best, cost_list
 
-def run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
+def run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length, c=.95):
     """
     Run function for annealing function
     """
@@ -202,7 +202,7 @@ def run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
         init_route = random.sample(x,len(x))
         
         # find best route with SA algorithm
-        best_route, cost_list = two_opt_annealing(T, scheme, init_route, adjacency_matrix, max_chain_length)
+        best_route, cost_list = two_opt_annealing(T, scheme, init_route, adjacency_matrix, max_chain_length, c)
 
         # append all values from simulation to lists
         costs.append(calculate_cost(best_route,adjacency_matrix)[1])
