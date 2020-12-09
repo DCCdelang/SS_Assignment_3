@@ -4,7 +4,7 @@ import time
 
 tsp_file = "TSP-Configurations/a280.tsp.txt"
 N_sim = 10
-max_chain_length = 5000
+max_chain_length = 100000
 
 t0 = time.time()
 T = 5000
