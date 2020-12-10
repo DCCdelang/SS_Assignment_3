@@ -42,7 +42,7 @@ def two_opt(route, adjacency_matrix, max_chain_length):
         for i in range(1, len(route) - 2):
             for j in range(i + 1, len(route)):
                 chain += 1
-                
+
                 if j - i == 1: continue
 
                 cost_list.append(calculate_cost(route,adjacency_matrix)[1])
@@ -50,6 +50,9 @@ def two_opt(route, adjacency_matrix, max_chain_length):
                 if cost_change(adjacency_matrix, route[i - 1], route[i], \
                     route[j - 1], route[j]) < -0.001:
                     route[i:j] = route[j - 1:i - 1:-1]
+
+                if chain == max_chain_length:
+                    return route, cost_list
 
     return route, cost_list
 
@@ -85,7 +88,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
 
     chains = 0
 
-    while T > 0.0001:
+    while T > 0:
         for i in range(1, len(route) - 2):
             # Adjust temperature
             if scheme == "lin":
