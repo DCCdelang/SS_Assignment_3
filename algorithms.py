@@ -32,14 +32,15 @@ def calculate_cost(route, adjacency_matrix):
 
 # Primarly based on:
 # https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
-
 def two_opt(route, adjacency_matrix, max_chain_length):
     """
     Calculates the best route using greedy two_opt
     """
     best = route
-    improved = True
-    while improved:
+    
+    chain = 0
+    while chain < max_chain_length:
+        chain += 1
         improved = False
         for i in range(1, len(route) - 2):
             for j in range(i + 1, len(route)):
@@ -49,6 +50,7 @@ def two_opt(route, adjacency_matrix, max_chain_length):
                     best[i:j] = best[j - 1:i - 1:-1]
                     improved = True
     return best
+
 
 def run_two_opt(tsp_file, N_sim):
     """
@@ -68,81 +70,13 @@ def run_two_opt(tsp_file, N_sim):
 
     return best_routes, calculate_costs
 
-def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
-    """
-    Annealing function with different parameter possibilities
-    """
-    best = route
-    iterations = 1
-    chain_length = 0
-    cost_list = []
-    T_list = []
-    while T > 0.01 and iterations < max_chain_length:
-        # Sample city from route
-        index1, index2 = np.random.randint(0,len(route),size=2)
-        sd, cost0 = calculate_cost(route,adjacency_matrix)
-        cost_list.append(cost0)
-
-        route[index1], route[index2] = route[index2], route[index1]
-        _, cost1 = calculate_cost(route,adjacency_matrix)
-
-        iterations += 1
-
-        # Adjust temperature
-        if scheme == "lin":
-            T = T*0.97
-        if scheme == "log":
-            C = 1
-            T = C/np.log(iterations)
-        if scheme == "std":
-            delta = .1
-            T = T / (1 + ((np.log(1+delta)* T) / (3 * sd)))
-
-        T_list.insert(0,T)
-
-        # Metropolis step   
-        if cost1 < cost0:
-            cost0 = cost1.copy()
-            chain_length += 1
-        else:
-            U = rs.uniform()
-            if U < np.exp((cost0-cost1)/T):
-                # print(T,np.exp((cost0-cost1)/T))
-                cost0 = cost1.copy()
-                chain_length += 1
-            else:
-                route[index1], route[index2] = route[index2], route[index1]
-        route = best
-    print("Max iterations:", iterations)
-    # plt.plot(T_list,cost_list)
-    # plt.plot(range(len(cost_list)),cost_list)
-    # plt.show()
-    return best
-
-def run_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
-    """
-    Run function for annealing function
-    """
-    best_routes = []
-    calculate_costs = []
-    adjacency_matrix = make_matrix(tsp_file)
-
-    for _ in range(N_sim):
-        x = list(range(len(adjacency_matrix)))
-        init_route = random.sample(x,len(x))
-        best_route = tsp_annealing(T, scheme, init_route, adjacency_matrix, max_chain_length)
-
-        calculate_costs.append(calculate_cost(best_route,adjacency_matrix)[1])
-        best_routes.append(best_route)
-    return best_routes, calculate_costs
-
 
 def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
     """
     Calculates the best route using greedy two_opt
     """
     best = route.copy()
-    iterations = 0
+    chains = 0
     cost_list = []
     T_list = []
     accept_list = [[],[]]
@@ -154,14 +88,14 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
                 T = T*c
             if scheme == "log":
                 C = 1
-                T = C/np.log(iterations)
+                T = C/np.log(chains)
             elif scheme == "std":
                 delta = .01
                 T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
         
 
             for j in range(i + 1, len(route)):
-                iterations += 1
+                chains += 1
                 
                 if j - i == 1: continue
 
@@ -182,7 +116,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
                         accept_list[0].insert(0,T)
                         best[i:j] = best[j - 1:i - 1:-1]
                 
-                if iterations > max_chain_length:
+                if chains > max_chain_length:
                     return best, cost_list
 
         route = best.copy()
@@ -211,76 +145,3 @@ def run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length=100000, c
         cost_lists.append(cost_list)
 
     return best_routes, costs, cost_lists
-
-def tsp_annealing_2(T, scheme, route, adjacency_matrix, max_chain_length):
-    """
-    Annealing function with different parameter possibilities
-    """
-    best = route
-    iterations = 0
-    chain_length = 0
-    cost_list = []
-    T_list = []
-    while T > 0.01 and iterations < max_chain_length:
-        # Sample city from route
-        index1, index2 = np.random.randint(0,len(route),size=2)
-        sd, cost0 = calculate_cost(route,adjacency_matrix)
-        cost_list.append(cost0)
-        temp = route.copy()
-
-        if index1 < index2:
-            route[index1:index2] = route[index2-1:index1-1:-1]
-        else:
-            route[index2:index1] = route[index1-1:index2-1:-1]
-        
-        _, cost1 = calculate_cost(route,adjacency_matrix)
-
-        iterations += 1
-
-        # Adjust temperature
-        if scheme == "lin":
-            T = T*0.999
-        if scheme == "log":
-            C = 1
-            T = C/np.log(iterations)
-        if scheme == "std":
-            delta = .1
-            T = T / (1 + ((np.log(1+delta)* T) / (3 * sd)))
-
-        T_list.insert(0,T)
-
-        # Metropolis step   
-        if cost1 < cost0:
-            cost0 = cost1
-            chain_length += 1
-        else:
-            U = rs.uniform()
-            if U < np.exp((cost0-cost1)/T):
-                cost0 = cost1
-                chain_length += 1
-            else:
-                route = temp.copy()
-        route = best.copy()
-    print("Max iterations:", iterations)
-    # plt.plot(T_list,cost_list)
-    # plt.plot(range(len(cost_list)),cost_list)
-    # plt.show()
-    return best
-
-
-def run_annealing_2(tsp_file, T, scheme, N_sim, max_chain_length):
-    """
-    Run function for annealing function
-    """
-    best_routes = []
-    calculate_costs = []
-    adjacency_matrix = make_matrix(tsp_file)
-
-    for _ in range(N_sim):
-        x = list(range(len(adjacency_matrix)))
-        init_route = random.sample(x,len(x))
-        best_route = tsp_annealing_2(T, scheme, init_route, adjacency_matrix, max_chain_length)
-
-        calculate_costs.append(calculate_cost(best_route,adjacency_matrix)[1])
-        best_routes.append(best_route)
-    return best_routes, calculate_costs
