@@ -25,13 +25,13 @@ def calculate_and_plot(cost_lists, N_sim, c = '2-opt'):
 
     
     '''uncomment to save csv'''
-    # # put data in pandas df and write to csv
-    # if c == '2-opt':
-    #     df_means = pd.DataFrame(means,dtype=float)
-    #     df_means.to_csv(f"data/{c}.csv")
-    # else:
-    #     df_means = pd.DataFrame(means,dtype=float)
-    #     df_means.to_csv(f"data/{c}.csv")
+    # put data in pandas df and write to csv
+    if c == '2-opt':
+        df_means = pd.DataFrame(means,dtype=float)
+        df_means.to_csv(f"data/{c}.csv")
+    else:
+        df_means = pd.DataFrame(means,dtype=float)
+        df_means.to_csv(f"data/{c}.csv")
 
     # plot data
     print('type =', c, ':', means[-1])
@@ -41,7 +41,7 @@ def calculate_and_plot(cost_lists, N_sim, c = '2-opt'):
 
 # define variables
 tsp_file = "TSP-Configurations/a280.tsp.txt"
-N_sim = 1
+N_sim = 10
 max_chain_length = 1e5
 T = 5000
 t0 = time.time()
