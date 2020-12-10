@@ -23,12 +23,14 @@ def calculate_and_plot(cost_lists, N_sim):
             temp_list.append(cost_lists[i][j])
         means.append(np.mean(temp_list))
 
+    print("T =", T, "Cost =", means[-1])
+
     # put data in pandas df and write to csv
     # df_means = pd.DataFrame(means,dtype=float)
     # df_means.to_csv(f"data/cooling_rate_{c}.csv")
 
     # plot data
-    plt.plot(range(len(means)), means, label = f'c = .{c}')
+    plt.plot(range(len(means)), means, label = f'T = {T}')
 
 
 # define variables
@@ -45,10 +47,7 @@ constants = [1000,5000,10000,20000]
 
 for T in constants:
     _, _, cost_lists = run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length, c)
-    
-
-
-
+    calculate_and_plot(cost_lists, N_sim)
 
 plt.xlabel('MCMC (iterations)')
 plt.ylabel('Cost')
