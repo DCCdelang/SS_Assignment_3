@@ -18,6 +18,8 @@ def check_opt():
     print(np.shape(adjacency_matrix))
     _,cost = calculate_cost(node_list,adjacency_matrix)
     print("Shortest a280 route =",cost)
+    
+    # Shortest a280 route = 2586.76964756316
 
     node_list = []
     with open(tsp_file,"r") as reader:
