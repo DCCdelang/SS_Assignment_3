@@ -36,39 +36,46 @@ def two_opt(route, adjacency_matrix, max_chain_length):
     """
     Calculates the best route using greedy two_opt
     """
-    best = route
-    
+    cost_list = []
     chain = 0
     while chain < max_chain_length:
-        chain += 1
-        improved = False
         for i in range(1, len(route) - 2):
             for j in range(i + 1, len(route)):
+                chain += 1
+
                 if j - i == 1: continue
-                if cost_change(adjacency_matrix, best[i - 1], best[i], \
-                    best[j - 1], best[j]) < -0.001:
-                    best[i:j] = best[j - 1:i - 1:-1]
-                    improved = True
-    return best
+
+                cost_list.append(calculate_cost(route,adjacency_matrix)[1])
+
+                if cost_change(adjacency_matrix, route[i - 1], route[i], \
+                    route[j - 1], route[j]) < -0.001:
+                    route[i:j] = route[j - 1:i - 1:-1]
+
+                if chain == max_chain_length:
+                    return route, cost_list
+
+    return route, cost_list
 
 
-def run_two_opt(tsp_file, N_sim):
+def run_two_opt(tsp_file, N_sim, max_chain_length):
     """
     Run function for greedy two_opt function
     """
     best_routes = []
-    calculate_costs = []
+    costs = []
     adjacency_matrix = make_matrix(tsp_file)
+    cost_lists = []
 
     for _ in range(N_sim):
         x = list(range(len(adjacency_matrix)))
         init_route = random.sample(x,len(x))
-        best_route = two_opt(init_route, adjacency_matrix)
+        best_route, cost_list = two_opt(init_route, adjacency_matrix, max_chain_length)
         
-        calculate_costs.append(calculate_cost(best_route,adjacency_matrix)[1])
         best_routes.append(best_route)
+        costs.append(calculate_cost(best_route,adjacency_matrix)[1])
+        cost_lists.append(cost_list)
 
-    return best_routes, calculate_costs
+    return best_routes, costs, cost_lists
 
 
 def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
@@ -76,10 +83,10 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
     Calculates the best route using greedy two_opt
     """
     best = route.copy()
-    chains = 0
-    cost_list = []
-    T_list = []
+    cost_list, T_list = [], []
     accept_list = [[],[]]
+
+    chains = 0
 
     while T > 0:
         for i in range(1, len(route) - 2):
