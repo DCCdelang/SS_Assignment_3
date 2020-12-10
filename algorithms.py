@@ -32,7 +32,8 @@ def calculate_cost(route, adjacency_matrix):
 
 # Primarly based on:
 # https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
-def two_opt(route, adjacency_matrix):
+
+def two_opt(route, adjacency_matrix, max_chain_length):
     """
     Calculates the best route using greedy two_opt
     """
@@ -146,7 +147,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
     T_list = []
     accept_list = [[],[]]
 
-    while T > 0:
+    while T > 0.0001:
         for i in range(1, len(route) - 2):
             # Adjust temperature
             if scheme == "lin":
@@ -187,7 +188,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
         route = best.copy()
     return best, cost_list
 
-def run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length, c=.95):
+def run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length=100000, c=.95):
     """
     Run function for annealing function
     """
