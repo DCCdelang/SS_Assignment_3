@@ -147,6 +147,7 @@ def run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length=100000, c
         best_route, cost_list = two_opt_annealing(T, scheme, init_route, adjacency_matrix, max_chain_length, c)
 
         # append all values from simulation to lists
+        print("T =",T, "Cost =", calculate_cost(best_route,adjacency_matrix)[1])
         costs.append(calculate_cost(best_route,adjacency_matrix)[1])
         best_routes.append(best_route)
         cost_lists.append(cost_list)

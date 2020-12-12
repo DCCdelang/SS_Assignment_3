@@ -24,7 +24,7 @@ def calculate_and_plot(cost_lists, N_sim):
         means.append(np.mean(temp_list))
         stds.append(np.std(temp_list))
 
-    print("T =", T, "Cost =", means[-1])
+    print("T =", T, "Mean cost =", means[-1])
 
     # put data in pandas df and write to csv
     df_means = pd.DataFrame({"Means":means,"Std":stds},dtype=float)
@@ -38,13 +38,13 @@ def calculate_and_plot(cost_lists, N_sim):
 tsp_file = "TSP-Configurations/a280.tsp.txt"
 N_sim = 10
 max_chain_length = 100000
-c = 0.975
+c = 0.9
 t0 = time.time()
 
 # linear scheme
 scheme = "lin" 
 
-constants = [100,1000,5000,10000,20000]
+constants = [1,5,10,100,1000,5000,10000,20000]
 
 for T in constants:
     _, _, cost_lists = run_two_opt_annealing(tsp_file, T, scheme, N_sim, \
