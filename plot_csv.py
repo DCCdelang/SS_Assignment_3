@@ -83,7 +83,7 @@ def T_c_compare_plot():
 
     ax.plot_surface(X, Y, Z,alpha=0.5)
     ax.scatter(x_data,y_data,z_data,c="r")
-    ax.set_xlabel('MCMC (iterations)', fontsize=14)
+    ax.set_xlabel('Initial Temp', fontsize=14)
     ax.set_ylabel('c value', fontsize=14)
     ax.set_zlabel("Cost",fontsize=14)
     # plt.legend(fontsize=14)
