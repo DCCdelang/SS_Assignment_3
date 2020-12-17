@@ -67,29 +67,30 @@ def run_two_opt(tsp_file, N_sim):
 
     return best_routes, calculate_costs
 
-def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
+def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length,c):
     """
     Annealing function with different parameter possibilities
     """
-    best = route
+    best = route.copy()
     iterations = 1
-    chain_length = 0
+    chains = 0
     cost_list = []
-    T_list = []
-    while T > 0.01 and iterations < max_chain_length:
+    
+    while T > 0:
         # Sample city from route
+        temp = route.copy()
         index1, index2 = np.random.randint(0,len(route),size=2)
         sd, cost0 = calculate_cost(route,adjacency_matrix)
         cost_list.append(cost0)
 
-        route[index1], route[index2] = route[index2], route[index1]
-        _, cost1 = calculate_cost(route,adjacency_matrix)
+        temp[index1:index2] = temp[index2-1:index1-1:-1]
+        _, cost1 = calculate_cost(temp,adjacency_matrix)
 
         iterations += 1
 
         # Adjust temperature
-        if scheme == "lin":
-            T = T*0.97
+        if scheme == "exp":
+            T = T*c
         if scheme == "log":
             C = 1
             T = C/np.log(iterations)
@@ -97,26 +98,18 @@ def tsp_annealing(T, scheme, route, adjacency_matrix, max_chain_length):
             delta = .1
             T = T / (1 + ((np.log(1+delta)* T) / (3 * sd)))
 
-        T_list.insert(0,T)
-
         # Metropolis step   
         if cost1 < cost0:
-            cost0 = cost1.copy()
-            chain_length += 1
+            route = temp.copy()
         else:
             U = rs.uniform()
             if U < np.exp((cost0-cost1)/T):
-                # print(T,np.exp((cost0-cost1)/T))
-                cost0 = cost1.copy()
-                chain_length += 1
-            else:
-                route[index1], route[index2] = route[index2], route[index1]
-        route = best
-    print("Max iterations:", iterations)
-    # plt.plot(T_list,cost_list)
-    # plt.plot(range(len(cost_list)),cost_list)
-    # plt.show()
-    return best
+                route = temp.copy()
+
+        if chains > max_chain_length:
+                    return best, cost_list, accept_list
+
+    return best, cost_list, accept_list
 
 def run_annealing(tsp_file, T, scheme, N_sim, max_chain_length):
     """
