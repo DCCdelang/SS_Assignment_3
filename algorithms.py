@@ -122,9 +122,12 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
                     sd0, cost0 = calculate_cost(temp,adjacency_matrix)
                     temp[i:j] = temp[j - 1:i - 1:-1]
                     _, cost1 = calculate_cost(temp,adjacency_matrix)
+
                     U = rs.uniform()
-                    if U < np.exp((cost0-cost1)/T):
-                        accept_list[1].append(np.exp((cost0-cost1)/T))
+                    Z = np.exp((cost0-cost1)/T)
+
+                    if U < Z:
+                        accept_list[1].append(Z)
                         accept_list[0].insert(0,T)
                         # print(np.exp((cost0-cost1)/T))
                         best[i:j] = best[j - 1:i - 1:-1]
