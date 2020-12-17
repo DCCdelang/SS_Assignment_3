@@ -83,10 +83,13 @@ def T_c_compare_plot():
 
     ax.plot_surface(X, Y, Z,alpha=0.5)
     ax.scatter(x_data,y_data,z_data,c="r")
-    ax.set_xlabel('Initial Temp', fontsize=14)
-    ax.set_ylabel('c value', fontsize=14)
-    ax.set_zlabel("Cost",fontsize=14)
+    ax.set_xlabel('\nInitial Temp', fontsize=14)
+    ax.set_xticks([0,5000,10000,15000,20000])
+    ax.set_ylabel('\nc value', fontsize=14)
+    ax.set_zlabel("\nCost",fontsize=14)
+    ax.dist = 13
     # plt.legend(fontsize=14)
-    plt.tick_params(labelsize=12)
+    plt.tick_params(labelsize=10)
+    plt.savefig("figures/TOA_T_c_compare.png")
     plt.show()
 T_c_compare_plot()
