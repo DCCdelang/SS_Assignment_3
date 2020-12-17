@@ -36,18 +36,18 @@ def calculate_and_plot(cost_lists, N_sim):
 
 # define variables
 tsp_file = "TSP-Configurations/a280.tsp.txt"
-N_sim = 1
-max_chain_length = 10000000
+N_sim = 10
+max_chain_length = 100000
 t0 = time.time()
 
 # uncomment to choose scheme
 # scheme = "log" 
 scheme = "log" 
 
-T_list = [1, 10, 100, 1000, 10000]
+T_list = [100, 1000, 10000]
 
 for T in T_list:
-    _, _, cost_lists = run_random_annealing(tsp_file, T, scheme, N_sim, \
+    _, _, cost_lists = run_two_opt_annealing(tsp_file, T, scheme, N_sim, \
     max_chain_length)
     calculate_and_plot(cost_lists, N_sim)
 
