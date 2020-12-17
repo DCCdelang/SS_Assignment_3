@@ -88,6 +88,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
     accept_list = [[],[]]
 
     chains = 0
+    T_0 = T
 
     while T > 0:
         for i in range(1, len(route) - 2):
@@ -96,11 +97,14 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
             if scheme == "exp":
                 T = T*c
             if scheme == "log":
-                C = 1
-                T = C/np.log(chains)
-            elif scheme == "std":
-                delta = .01
-                T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
+                alpha = 50
+                T = T_0/(1+alpha*np.log(1+chains))
+            # if scheme == "std":
+            #     delta = .01
+            #     T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
+            if scheme == "quad":
+                alpha = 1
+                T = T_0/(1+alpha*chains**2)
                 
             for j in range(i + 1, len(route)):
                 chains += 1
@@ -167,6 +171,9 @@ def tsp_annealing_random(T, scheme, route, adjacency_matrix, max_chain_length,c)
         if scheme == "std":
             delta = .1
             T = T / (1 + ((np.log(1+delta)* T) / (3 * sd)))
+        if scheme == "quad":
+            alpha = 1
+            T = T_0/(1+alpha*chains**2)
 
         # Metropolis step   
         if cost0 > cost1:
