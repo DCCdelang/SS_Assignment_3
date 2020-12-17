@@ -91,7 +91,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
     while T > 0:
         for i in range(1, len(route) - 2):
             # Adjust temperature
-            if scheme == "lin":
+            if scheme == "expo":
                 T = T*c
             if scheme == "log":
                 C = 1
@@ -104,7 +104,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
             for j in range(i + 1, len(route)):
                 chains += 1
                 
-                if j - i == 1: continue
+                # if j - i == 1: continue
 
                 cost_list.append(calculate_cost(best,adjacency_matrix)[1])
                 T_list.append(T)
@@ -117,13 +117,16 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
                     sd0, cost0 = calculate_cost(temp,adjacency_matrix)
                     temp[i:j] = temp[j - 1:i - 1:-1]
                     _, cost1 = calculate_cost(temp,adjacency_matrix)
+
                     U = rs.uniform()
-                    if U < np.exp((cost0-cost1)/T):
-                        accept_list[1].append(np.exp((cost0-cost1)/T))
+                    Z = np.exp((cost0-cost1)/T)
+
+                    if U < Z:
+                        accept_list[1].append(Z)
                         accept_list[0].insert(0,T)
                         best[i:j] = best[j - 1:i - 1:-1]
                 
-                if chains > max_chain_length:
+                if chains >= max_chain_length:
                     return best, cost_list
 
         route = best.copy()

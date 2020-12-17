@@ -28,7 +28,7 @@ def calculate_and_plot(cost_lists, N_sim):
 
     # put data in pandas df and write to csv
     df_means = pd.DataFrame({"Means":means,"Std":stds},dtype=float)
-    df_means.to_csv(f"data/lin_c_{c}_temp_{T}.csv")
+    df_means.to_csv(f"data/expo_c_{c}_temp_{T}.csv")
 
     # plot data
     plt.plot(range(len(means)), means, label = f'T = {T}')
@@ -41,8 +41,8 @@ max_chain_length = 100000
 c = 0.9
 t0 = time.time()
 
-# linear scheme
-scheme = "lin" 
+# exponential scheme
+scheme = "expo" 
 
 constants = [1,5,10,100,1000,5000,10000,20000]
 

@@ -13,7 +13,7 @@ max_chain_length = 100000
 t0 = time.time()
 
 # T = 10000
-# scheme = "lin" # "lin", "log" or "std"
+# scheme = "expo" # "expo", "log" or "std"
 # routes, costs = run_annealing_2(tsp_file, T, scheme, N_sim, max_chain_length)
 # route = routes[0]
 # print('scheme =', scheme, "Cost =", costs[-1])
@@ -21,21 +21,21 @@ t0 = time.time()
 
 # T = 10000
 
-# scheme = "log" # "lin", "log" or "std"
+# scheme = "log" # "expo", "log" or "std"
 # routes, costs = run_annealing(tsp_file, T, scheme, N_sim, max_chain_length)
 # route = routes[0]
 # print('log scheme =', costs[-1])
 # plot_route(tsp_file,route)
 
 # T = 10000
-# scheme = "log" # "lin", "log" or "std"
+# scheme = "log" # "expo", "log" or "std"
 # routes, costs = run_annealing(tsp_file, T, scheme, N_sim, max_chain_length)
 # route = routes[0]
 # print('log scheme =', costs[-1])
 # plot_route(tsp_file,route)
 
 # T = 10000
-# scheme = "std" # "lin", "log" or "std"
+# scheme = "std" # "expo", "log" or "std"
 # routes, costs = run_annealing(tsp_file, T, scheme, N_sim, max_chain_length)
 # route = routes[0]
 # print('std scheme =', costs[-1])
