@@ -4,22 +4,18 @@ from scipy.optimize import curve_fit
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-def two_opt_vs_SA():
+def plot_two_opt():
     df_2opt = pd.read_csv("data/2-opt.csv")
     two_opt_iterations = df_2opt['iterations']
     two_opt_costs = df_2opt['costs']
 
-    # df_SA = pd.read_csv("data/0.975.csv")
-    # SA_iterations = df_SA['iterations']
-    # SA_costs = df_SA['costs']
-
     plt.plot(two_opt_iterations, two_opt_costs, label = '2-opt')
-    # plt.plot(SA_iterations, SA_costs, label = 'SA')
 
     plt.xlabel('MCMC (iterations)', fontsize=14)
     plt.ylabel('Cost', fontsize=14)
     # plt.legend(fontsize=14)
     plt.tick_params(labelsize=14)
+    plt.tight_layout()
     plt.savefig('figures/2opt_costs.png')
     plt.show()
 
@@ -46,7 +42,27 @@ def T_compare_plot(c=0.975):
     plt.legend(fontsize=14)
     plt.tick_params(labelsize=14)
     plt.show()
-T_compare_plot()
+
+def plot_log():
+    T_var = [10, 100,1000,10000]
+    
+    for T in T_var:
+        df_temp = pd.read_csv(f"data/two_opt_anneal/log_temp_{T}.csv")
+        means = df_temp['Means']
+        # stds = df_temp['Std']
+        # ci = (1.96*stds/means)
+        plt.plot(range(len(means)), means, label = f'T = {T}')
+        # plt.fill_between(range(len(means)),(means-ci),(means+ci),alpha=0.8)
+        # print("For T =",T, "value =",means.iloc[-1],"+-",stds.iloc[-1])
+        print("For T =",T, "value =",means.iloc[-1])
+
+    plt.xlabel('MCMC (iterations)', fontsize=14)
+    plt.ylabel('Cost', fontsize=14)
+    plt.legend(fontsize=14)
+    plt.tick_params(labelsize=14)
+    plt.tight_layout()
+    plt.savefig('figures/log.png')
+    plt.show()
 
 
 def function(data, a, b, c):
@@ -97,5 +113,5 @@ def T_c_compare_plot():
     plt.savefig("figures/TOA_T_c_compare.png")
     plt.show()
 
-# T_c_compare_plot()
-two_opt_vs_SA()
+plot_two_opt()
+# plot_log()

@@ -44,7 +44,7 @@ t0 = time.time()
 # scheme = "log" 
 scheme = "log" 
 
-T_list = [100, 1000, 10000]
+T_list = [10, 100, 1000, 10000, 100000]
 
 for T in T_list:
     _, _, cost_lists = run_two_opt_annealing(tsp_file, T, scheme, N_sim, \
