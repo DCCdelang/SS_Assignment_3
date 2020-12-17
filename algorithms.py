@@ -130,7 +130,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
                     if U < Z:
                         accept_list[1].append(Z)
                         accept_list[0].insert(0,T)
-                        # print(np.exp((cost0-cost1)/T))
+
                         best[i:j] = best[j - 1:i - 1:-1]
 
                 if chains > max_chain_length:
@@ -149,6 +149,7 @@ def tsp_annealing_random(T, scheme, route, adjacency_matrix, max_chain_length,c)
     chains = 0
     cost_list = []
     T_0 = T
+    T_list = []
     
     while T > 0:
         # Sample city from route
@@ -162,6 +163,7 @@ def tsp_annealing_random(T, scheme, route, adjacency_matrix, max_chain_length,c)
         _, cost1 = calculate_cost(temp,adjacency_matrix)
 
         chains += 1
+        T_list.append(T)
 
         # Adjust temperature
         if scheme == "exp":
@@ -207,7 +209,6 @@ def run_two_opt_annealing(tsp_file, T, scheme, N_sim, max_chain_length=100000, c
         best_route, cost_list, accept_list = two_opt_annealing(T, scheme, init_route, adjacency_matrix, max_chain_length, c)
 
         # append all values from simulation to lists
-        print("T =",T, "Cost =", calculate_cost(best_route,adjacency_matrix)[1])
         costs.append(calculate_cost(best_route,adjacency_matrix)[1])
         best_routes.append(best_route)
         cost_lists.append(cost_list)
@@ -233,7 +234,6 @@ def run_random_annealing(tsp_file, T, scheme, N_sim, max_chain_length=100000, c=
         best_route, cost_list = tsp_annealing_random(T, scheme, init_route, adjacency_matrix, max_chain_length, c)
 
         # append all values from simulation to lists
-        print("T =",T, "Cost =", calculate_cost(best_route,adjacency_matrix)[1])
         costs.append(calculate_cost(best_route,adjacency_matrix)[1])
         best_routes.append(best_route)
         cost_lists.append(cost_list)

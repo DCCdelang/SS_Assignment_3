@@ -21,6 +21,7 @@ def calculate_and_plot(cost_lists, N_sim, c = '2-opt'):
         temp_list = []
         for i in range(N_sim):
             temp_list.append(cost_lists[i][j])
+            print(i)
         means.append(np.mean(temp_list))
 
     
@@ -41,7 +42,7 @@ def calculate_and_plot(cost_lists, N_sim, c = '2-opt'):
 
 # define variables
 tsp_file = "TSP-Configurations/a280.tsp.txt"
-N_sim = 1
+N_sim = 10
 max_chain_length = 1e5
 T = 5000
 t0 = time.time()
@@ -52,8 +53,8 @@ scheme = "lin"
 constants = [.9]
 
 # plot 2opt costs
-# _, _, cost_lists_2opt = run_two_opt(tsp_file, N_sim, max_chain_length)
-# calculate_and_plot(cost_lists_2opt, N_sim)
+_, _, cost_lists_2opt = run_two_opt(tsp_file, N_sim, max_chain_length)
+calculate_and_plot(cost_lists_2opt, N_sim)
 
 # plot sim annealing costs
 for c in constants:

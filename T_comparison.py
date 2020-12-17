@@ -37,24 +37,19 @@ def calculate_and_plot(cost_lists, N_sim):
 # define variables
 tsp_file = "TSP-Configurations/a280.tsp.txt"
 N_sim = 10
-max_chain_length = 2000000
-c = 0.9995
+max_chain_length = 100000
 t0 = time.time()
 
-# linear scheme
-scheme = "exp" 
+# uncomment to choose scheme
+# scheme = "log" 
+scheme = "log" 
 
-T_list = [10,100,1000,10000,100000]
-# C_list = [0.8,0.9,0.99]
-c = 0.99
-T = 100000
-# for T in T_list:
-    # for c in C_list:
-    # _, _, cost_lists = run_random_annealing(tsp_file, T, scheme, N_sim, \
-    # max_chain_length, c)
-_, _, cost_lists = run_two_opt_annealing(tsp_file, T, scheme, N_sim, \
-max_chain_length, c)
-calculate_and_plot(cost_lists, N_sim)
+T_list = [100, 1000, 10000]
+
+for T in T_list:
+    _, _, cost_lists = run_two_opt_annealing(tsp_file, T, scheme, N_sim, \
+    max_chain_length)
+    calculate_and_plot(cost_lists, N_sim)
 
 t1 = time.time()
 print("The simulation took ", round(t1-t0), 'seconds')
