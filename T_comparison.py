@@ -26,9 +26,9 @@ def calculate_and_plot(cost_lists, N_sim):
 
     print("T =", T, "c =", c,  "Mean cost =", means[-1])
 
-    # put data in pandas df and write to csv
+    # # put data in pandas df and write to csv
     df_means = pd.DataFrame({"Means":means,"Std":stds},dtype=float)
-    df_means.to_csv(f"data/random_anneal/exp_c_{c}_temp_{T}.csv")
+    df_means.to_csv(f"data/two_opt_anneal/log_temp_{T}.csv")
 
     # plot data
     plt.plot(range(len(means)), means, label = f'T = {T}')
@@ -38,20 +38,22 @@ def calculate_and_plot(cost_lists, N_sim):
 tsp_file = "TSP-Configurations/a280.tsp.txt"
 N_sim = 10
 max_chain_length = 100000
-# c = 0.9995
+c = 0.9995
 t0 = time.time()
 
 # linear scheme
-scheme = "exp" 
+scheme = "log" 
 
-T_list = [100,1000,10000,100000]
-C_list = [0.8,0.9,0.99]
+T_list = [100,1000,10000]
+# C_list = [0.8,0.9,0.99]
 
 for T in T_list:
-    for c in C_list:
-        _, _, cost_lists = run_random_annealing(tsp_file, T, scheme, N_sim, \
-        max_chain_length, c)
-        calculate_and_plot(cost_lists, N_sim)
+    # for c in C_list:
+    # _, _, cost_lists = run_random_annealing(tsp_file, T, scheme, N_sim, \
+    # max_chain_length, c)
+    _, _, cost_lists = run_two_opt_annealing(tsp_file, T, scheme, N_sim, \
+    max_chain_length, c)
+    calculate_and_plot(cost_lists, N_sim)
 
 t1 = time.time()
 print("The simulation took ", round(t1-t0), 'seconds')
