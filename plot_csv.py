@@ -9,17 +9,18 @@ def two_opt_vs_SA():
     two_opt_iterations = df_2opt['iterations']
     two_opt_costs = df_2opt['costs']
 
-    df_SA = pd.read_csv("data/0.975.csv")
-    SA_iterations = df_SA['iterations']
-    SA_costs = df_SA['costs']
+    # df_SA = pd.read_csv("data/0.975.csv")
+    # SA_iterations = df_SA['iterations']
+    # SA_costs = df_SA['costs']
 
     plt.plot(two_opt_iterations, two_opt_costs, label = '2-opt')
-    plt.plot(SA_iterations, SA_costs, label = 'SA')
+    # plt.plot(SA_iterations, SA_costs, label = 'SA')
 
     plt.xlabel('MCMC (iterations)', fontsize=14)
     plt.ylabel('Cost', fontsize=14)
-    plt.legend(fontsize=14)
+    # plt.legend(fontsize=14)
     plt.tick_params(labelsize=14)
+    plt.savefig('figures/2opt_costs.png')
     plt.show()
 
 
@@ -92,4 +93,6 @@ def T_c_compare_plot():
     plt.tick_params(labelsize=10)
     plt.savefig("figures/TOA_T_c_compare.png")
     plt.show()
-T_c_compare_plot()
+
+# T_c_compare_plot()
+two_opt_vs_SA()

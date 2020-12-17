@@ -139,10 +139,10 @@ def tsp_annealing_random(T, scheme, route, adjacency_matrix, max_chain_length,c)
     Annealing function with different parameter possibilities
     """
     best = route.copy()
-    iterations = 1
     chains = 0
     cost_list = []
     T_0 = T
+    T_list = []
     
     while T > 0:
         # Sample city from route
@@ -156,6 +156,7 @@ def tsp_annealing_random(T, scheme, route, adjacency_matrix, max_chain_length,c)
         _, cost1 = calculate_cost(temp,adjacency_matrix)
 
         chains += 1
+        T_list.append(T)
 
         # Adjust temperature
         if scheme == "exp":
@@ -177,6 +178,7 @@ def tsp_annealing_random(T, scheme, route, adjacency_matrix, max_chain_length,c)
 
         best = route.copy()
         if chains > max_chain_length:
+            print(T_list[0:100])
             return best, cost_list
     return best, cost_list
 
