@@ -28,7 +28,7 @@ def calculate_and_plot(cost_lists, N_sim):
 
     # # put data in pandas df and write to csv
     df_means = pd.DataFrame({"Means":means,"Std":stds},dtype=float)
-    df_means.to_csv(f"data/two_opt_anneal/log_temp_{T}.csv")
+    df_means.to_csv(f"data/two_opt_anneal/long_exp_T_{T}_c_{c}.csv")
 
     # plot data
     plt.plot(range(len(means)), means, label = f'T = {T}')
