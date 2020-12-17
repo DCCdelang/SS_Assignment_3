@@ -89,6 +89,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
 
     chains = 0
     T_0 = T
+    iterations = 0
 
     while T > 0:
         for i in range(1, len(route) - 2):
@@ -98,14 +99,14 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
                 T = T*c
             if scheme == "log":
                 alpha = 50
-                T = T_0/(1+alpha*np.log(1+chains))
+                T = T_0/(1+alpha*np.log(1+iterations))
             # if scheme == "std":
             #     delta = .01
             #     T = T / (1 + ((np.log(1+delta)* T) / (3 * sd0)))
             if scheme == "quad":
                 alpha = 1
-                T = T_0/(1+alpha*chains**2)
-                
+                T = T_0/(1+alpha*iterations**2)
+            iterations += 1
             for j in range(i + 1, len(route)):
                 chains += 1
 
@@ -133,9 +134,11 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
                         best[i:j] = best[j - 1:i - 1:-1]
 
                 if chains > max_chain_length:
+                    print("End by chainlength: ",chains,"T =",T)
                     return best, cost_list, accept_list
 
         route = best.copy()
+    print("End by T: ",T,"Chains: ",chains)
     return best, cost_list, accept_list
 
 def tsp_annealing_random(T, scheme, route, adjacency_matrix, max_chain_length,c):
