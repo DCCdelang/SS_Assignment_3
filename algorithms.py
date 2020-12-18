@@ -88,7 +88,7 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
     cost_list, T_list = [], []
     accept_list = [[],[]]
 
-    chains = 0
+    chains, iterations = 0, 0
     T_0 = T
     iterations = 0
 
@@ -107,7 +107,9 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
             if scheme == "quad":
                 alpha = 1
                 T = T_0/(1+alpha*iterations**2)
+
             iterations += 1
+            
             for j in range(i + 1, len(route)):
                 chains += 1
 
