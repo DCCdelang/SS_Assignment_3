@@ -28,7 +28,7 @@ def calculate_and_plot(cost_lists, N_sim):
 
     # # put data in pandas df and write to csv
     df_means = pd.DataFrame({"Means":means,"Std":stds},dtype=float)
-    df_means.to_csv(f"data/two_opt_anneal/long_exp_T_{T}_c_{c}.csv")
+    df_means.to_csv(f"data/two_opt_anneal/long_quad_T_{T}.csv")
 
     # plot data
     plt.plot(range(len(means)), means, label = f'T = {T}')
@@ -36,18 +36,18 @@ def calculate_and_plot(cost_lists, N_sim):
 
 # define variables
 tsp_file = "TSP-Configurations/a280.tsp.txt"
-N_sim = 10
-max_chain_length = 100000
+N_sim = 1
+max_chain_length = 2e6
 t0 = time.time()
 
 # uncomment to choose scheme
 # scheme = "log" 
 scheme = "log" 
 
-T_list = [100, 1000, 10000]
+T_list = [100000]
 
 for T in T_list:
-    _, _, cost_lists = run_two_opt_annealing(tsp_file, T, scheme, N_sim, \
+    best_routes, _, cost_lists = run_two_opt_annealing(tsp_file, T, scheme, N_sim, \
     max_chain_length)
     calculate_and_plot(cost_lists, N_sim)
 

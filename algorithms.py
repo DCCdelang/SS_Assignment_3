@@ -32,7 +32,8 @@ def calculate_cost(route, adjacency_matrix):
 
 
 # Primarly based on:
-# https://stackoverflow.com/questions/53275314/2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
+# https://stackoverflow.com/questions/53275314/ \
+# 2-opt-algorithm-to-solve-the-travelling-salesman-problem-in-python
 def two_opt(route, adjacency_matrix, max_chain_length):
     """
     Calculates the best route using greedy two_opt
@@ -134,11 +135,13 @@ def two_opt_annealing(T, scheme, route, adjacency_matrix, max_chain_length, c):
                         best[i:j] = best[j - 1:i - 1:-1]
 
                 if chains > max_chain_length:
-                    print("End by chainlength: ",chains,"T =",T)
+                    print("End by chainlength: ",chains,"T =",T,"Cost:",cost0)
+                    print("route",best)
                     return best, cost_list, accept_list
 
         route = best.copy()
-    print("End by T: ",T,"Chains: ",chains)
+    print("End by T: ",T,"Chains: ",chains,"Cost:",cost0)
+    print("route",best)
     return best, cost_list, accept_list
 
 def tsp_annealing_random(T, scheme, route, adjacency_matrix, max_chain_length,c):
